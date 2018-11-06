@@ -120,7 +120,7 @@ Utilities
 
    generate_asimov_data
    loglambdav
+   qmu
    pvals_from_teststat
    pvals_from_teststat_expected
-   qmu
    hypotest
