@@ -17,12 +17,11 @@ def test_notebooks(tmpdir):
         'docs/examples/notebooks/XML_ImportExport.ipynb', **common_kwargs
     )
 
-    if sys.version_info.major > 2:
-        # The Binder example uses specific relative paths
-        cwd = os.getcwd()
-        os.chdir(os.path.join(cwd, 'docs/examples/notebooks/binderexample'))
-        pm.execute_notebook('StatisticalAnalysis.ipynb', **common_kwargs)
-        os.chdir(cwd)
+    # The Binder example uses specific relative paths
+    cwd = os.getcwd()
+    os.chdir(os.path.join(cwd, 'docs/examples/notebooks/binderexample'))
+    pm.execute_notebook('StatisticalAnalysis.ipynb', **common_kwargs)
+    os.chdir(cwd)
 
     pm.execute_notebook(
         'docs/examples/notebooks/learn/InterpolationCodes.ipynb', **common_kwargs
