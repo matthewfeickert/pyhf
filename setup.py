@@ -18,7 +18,7 @@ extras_require = {
     ],
     'torch': ['torch~=1.0'],
     'mxnet': ['mxnet~=1.0', 'numpy<1.15.0,>=1.8.2', 'graphviz<0.9.0,>=0.8.1'],
-    'jax': ['jax~=0.1'],
+    'jax': ['jax~=0.1.38', 'jaxlib~=0.1.21'],
     # 'dask': [
     #     'dask[array]'
     # ],
