@@ -52,6 +52,13 @@ Install latest stable release from `PyPI <https://pypi.org/project/pyhf/>`__...
 
     pip install pyhf[mxnet]
 
+... with JAX backend
+++++++++++++++++++++++
+
+.. code-block:: console
+
+    pip install pyhf[jax]
+
 ... with all backends
 +++++++++++++++++++++
 

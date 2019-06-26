@@ -50,6 +50,7 @@ Computational Backends:
 - [x] PyTorch
 - [x] TensorFlow
 - [x] MXNet
+- [x] JAX
 
 Available Optimizers
 
