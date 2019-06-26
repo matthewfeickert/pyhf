@@ -64,7 +64,7 @@ Install latest stable release from `PyPI <https://pypi.org/project/pyhf/>`__...
 
 .. code-block:: console
 
-    pip install pyhf[tensorflow,torch,mxnet]
+    pip install pyhf[tensorflow,torch,mxnet,jax]
 
 
 ... with xml import/export functionality
@@ -106,12 +106,19 @@ Install latest development version from `GitHub <https://github.com/diana-hep/py
 
     pip install --ignore-installed -U "git+https://github.com/diana-hep/pyhf.git#egg=pyhf[mxnet]"
 
+... with JAX backend
+++++++++++++++++++++++
+
+.. code-block:: console
+
+    pip install --ignore-installed -U "git+https://github.com/diana-hep/pyhf.git#egg=pyhf[jax]"
+
 ... with all backends
 +++++++++++++++++++++
 
 .. code-block:: console
 
-    pip install --ignore-installed -U "git+https://github.com/diana-hep/pyhf.git#egg=pyhf[tensorflow,torch,mxnet]"
+    pip install --ignore-installed -U "git+https://github.com/diana-hep/pyhf.git#egg=pyhf[tensorflow,torch,mxnet,jax]"
 
 
 ... with xml import/export functionality
