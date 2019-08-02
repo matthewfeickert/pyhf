@@ -103,8 +103,9 @@ Statistics
 .. autosummary::
    :toctree: _generated/
 
-   test_statistics
-   utils
+   test_statistics.qmu
+   utils.loglambdav
+   utils.generate_asimov_data
 
 Exceptions
 ----------
