@@ -103,6 +103,7 @@ Statistics
 .. autosummary::
    :toctree: _generated/
 
+   test_statistics.hypotest
    test_statistics.qmu
    utils.loglambdav
    utils.generate_asimov_data
@@ -132,4 +133,3 @@ Utilities
 
    pvals_from_teststat
    pvals_from_teststat_expected
-   hypotest
