@@ -95,6 +95,17 @@ Interpolators
    code4
    code4p
 
+Statistics
+----------
+
+.. currentmodule:: pyhf.stats
+
+.. autosummary::
+   :toctree: _generated/
+
+   test_statistics
+   utils
+
 Exceptions
 ----------
 
@@ -118,9 +129,6 @@ Utilities
 .. autosummary::
    :toctree: _generated/
 
-   generate_asimov_data
-   loglambdav
    pvals_from_teststat
    pvals_from_teststat_expected
-   qmu
    hypotest
