@@ -267,7 +267,7 @@ def cls(
     if backend in ['pytorch', 'torch']:
         set_backend(tensor.pytorch_backend())
     elif backend in ['tensorflow', 'tf']:
-        from tensorflow import Session
+        from tensorflow.compat.v1 import Session
 
         set_backend(tensor.tensorflow_backend(session=Session()))
     tensorlib, _ = get_backend()
