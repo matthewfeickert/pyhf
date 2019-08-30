@@ -270,16 +270,17 @@ def cls(
         from tensorflow import Session
 
         set_backend(tensor.tensorflow_backend(session=Session()))
+    tensorlib, _ = get_backend()
 
     optconf = {k: v for item in optconf for k, v in item.items()}
 
     # set the new optimizer
     if optimizer:
         new_optimizer = getattr(optimize, optimizer)
-        set_backend(get_backend()[0], new_optimizer(**optconf))
+        set_backend(tensorlib, new_optimizer(**optconf))
 
     result = hypotest(testpoi, w.data(p), p, qtilde=is_qtilde, return_expected_set=True)
-    if get_backend()[0].name != 'numpy':
+    if tensorlib.name != 'numpy':
         result = {'CLs_obs': result[0].tolist(), 'CLs_exp': result[-1].tolist()}
     else:
         result = {
