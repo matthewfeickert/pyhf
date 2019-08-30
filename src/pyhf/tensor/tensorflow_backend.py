@@ -70,6 +70,14 @@ class tensorflow_backend(object):
         """
         return tf.tile(tensor_in, repeats)
 
+    def conditional(self, bool_condition, true_callable, false_callable):
+        return tf.cond(bool_condition, true_callable, false_callable)
+
+    def less(self, tensor_in_1, tensor_in_2):
+        tensor_in_1 = self.astensor(tensor_in_1)
+        tensor_in_2 = self.astensor(tensor_in_2)
+        return tf.math.less(tensor_in_1, tensor_in_2)
+
     def tolist(self, tensor_in):
         try:
             return self.session.run(tensor_in).tolist()
