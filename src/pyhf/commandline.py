@@ -8,7 +8,7 @@ import jsonpatch
 from .utils import hypotest, EqDelimStringParamType
 from .workspace import Workspace
 from .version import __version__
-from . import tensorlib, set_backend, optimize
+from . import tensor, get_backend, set_backend, optimize
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -254,7 +254,7 @@ def cls(
     # set the new optimizer
     if optimizer:
         new_optimizer = getattr(optimize, optimizer)
-        set_backend(tensorlib, new_optimizer(**optconf))
+        set_backend(get_backend()[0], new_optimizer(**optconf))
 
     result = hypotest(testpoi, w.data(p), p, qtilde=is_qtilde, return_expected_set=True)
     result = {'CLs_obs': result[0].tolist()[0], 'CLs_exp': result[-1].ravel().tolist()}
