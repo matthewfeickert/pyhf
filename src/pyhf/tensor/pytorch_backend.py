@@ -45,9 +45,7 @@ class pytorch_backend(object):
             >>> a = pyhf.tensorlib.astensor([4])
             >>> b = pyhf.tensorlib.astensor([5])
             >>> pyhf.tensorlib.conditional(
-            ...     torch.lt(a[0], b[0]),
-            ...     lambda: torch.add(a, b),
-            ...     lambda: torch.subtract(a, b),
+            ...     torch.lt(a, b)[0], lambda: torch.add(a, b), lambda: torch.subtract(a, b)
             ... )
             tensor([9.])
 

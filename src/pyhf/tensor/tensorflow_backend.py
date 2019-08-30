@@ -86,7 +86,7 @@ class tensorflow_backend(object):
             >>> with sess.as_default():
             ...   sess.run(
             ...       pyhf.tensorlib.conditional(
-            ...           tf.less(a[0], b[0]), lambda: tf.add(a, b), lambda: tf.subtract(a, b)
+            ...           tf.less(a, b)[0], lambda: tf.add(a, b), lambda: tf.subtract(a, b)
             ...       )
             ...   )
             ...
