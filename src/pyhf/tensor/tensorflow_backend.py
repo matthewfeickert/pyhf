@@ -89,6 +89,7 @@ class tensorflow_backend(object):
             ...           tf.less(a[0], b[0]), lambda: tf.add(a, b), lambda: tf.subtract(a, b)
             ...       )
             ...   )
+            ...
             array([9.], dtype=float32)
 
         Args:

@@ -34,6 +34,31 @@ class pytorch_backend(object):
         return torch.clamp(tensor_in, min_value, max_value)
 
     def conditional(self, predicate, true_callable, false_callable):
+        """
+        Runs a callable conditional on the boolean value of the evaulation of a predicate
+
+        Example:
+
+            >>> import pyhf
+            >>> import torch
+            >>> pyhf.set_backend(pyhf.tensor.pytorch_backend())
+            >>> a = pyhf.tensorlib.astensor([4])
+            >>> b = pyhf.tensorlib.astensor([5])
+            >>> pyhf.tensorlib.conditional(
+            ...     torch.lt(a[0], b[0]),
+            ...     lambda: torch.add(a, b),
+            ...     lambda: torch.subtract(a, b),
+            ... )
+            tensor([9.])
+
+        Args:
+            predicate (`scalar`): The logical condition that determines which callable to evaluate
+            true_callable (`callable`): The callable that is evaluated when the :code:`predicate` evalutes to :code:`true`
+            false_callable (`callable`): The callable that is evaluated when the :code:`predicate` evalutes to :code:`false`
+
+        Returns:
+            PyTorch Tensor: The output of the callable that was evaluated
+        """
         return true_callable() if predicate else false_callable()
 
     def less(self, tensor_in_1, tensor_in_2):
