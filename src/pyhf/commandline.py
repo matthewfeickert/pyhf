@@ -280,13 +280,10 @@ def cls(
         set_backend(tensorlib, new_optimizer(**optconf))
 
     result = hypotest(testpoi, w.data(p), p, qtilde=is_qtilde, return_expected_set=True)
-    if tensorlib.name != 'numpy':
-        result = {'CLs_obs': result[0].tolist(), 'CLs_exp': result[-1].tolist()}
-    else:
-        result = {
-            'CLs_obs': result[0].tolist()[0],
-            'CLs_exp': result[-1].ravel().tolist(),
-        }
+    result = {
+        'CLs_obs': tensorlib.tolist(result[0])[0],
+        'CLs_exp': tensorlib.tolist(tensorlib.reshape(result[-1], [-1])),
+    }
 
     if output_file is None:
         click.echo(json.dumps(result, indent=4, sort_keys=True))
