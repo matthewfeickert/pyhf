@@ -78,6 +78,11 @@ class tensorflow_backend(object):
         tensor_in_2 = self.astensor(tensor_in_2)
         return tf.math.less(tensor_in_1, tensor_in_2)
 
+    def greater(self, tensor_in_1, tensor_in_2):
+        tensor_in_1 = self.astensor(tensor_in_1)
+        tensor_in_2 = self.astensor(tensor_in_2)
+        return tf.math.greater(tensor_in_1, tensor_in_2)
+
     def tolist(self, tensor_in):
         try:
             return self.session.run(tensor_in).tolist()

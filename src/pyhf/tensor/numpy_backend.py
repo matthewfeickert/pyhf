@@ -82,6 +82,19 @@ class numpy_backend(object):
         """
         return np.tile(tensor_in, repeats)
 
+    def conditional(self, bool_condition, true_callable, false_callable):
+        return true_callable() if bool_condition else false_callable()
+
+    def less(self, tensor_in_1, tensor_in_2):
+        tensor_in_1 = self.astensor(tensor_in_1)
+        tensor_in_2 = self.astensor(tensor_in_2)
+        return np.less(tensor_in_1, tensor_in_2)
+
+    def greater(self, tensor_in_1, tensor_in_2):
+        tensor_in_1 = self.astensor(tensor_in_1)
+        tensor_in_2 = self.astensor(tensor_in_2)
+        return np.greater(tensor_in_1, tensor_in_2)
+
     def tolist(self, tensor_in):
         try:
             return tensor_in.tolist()
