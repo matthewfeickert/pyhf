@@ -33,8 +33,8 @@ class pytorch_backend(object):
         """
         return torch.clamp(tensor_in, min_value, max_value)
 
-    def conditional(self, bool_condition, true_callable, false_callable):
-        return true_callable() if bool_condition else false_callable()
+    def conditional(self, predicate, true_callable, false_callable):
+        return true_callable() if predicate else false_callable()
 
     def less(self, tensor_in_1, tensor_in_2):
         tensor_in_1 = self.astensor(tensor_in_1)

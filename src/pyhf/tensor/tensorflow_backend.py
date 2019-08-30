@@ -70,8 +70,8 @@ class tensorflow_backend(object):
         """
         return tf.tile(tensor_in, repeats)
 
-    def conditional(self, bool_condition, true_callable, false_callable):
-        return tf.cond(bool_condition, true_callable, false_callable)
+    def conditional(self, predicate, true_callable, false_callable):
+        return tf.cond(predicate, true_callable, false_callable)
 
     def less(self, tensor_in_1, tensor_in_2):
         tensor_in_1 = self.astensor(tensor_in_1)
