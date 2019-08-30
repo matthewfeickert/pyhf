@@ -227,10 +227,24 @@ def inspect(workspace, output_file, measurement):
 @click.option('-p', '--patch', multiple=True)
 @click.option('--testpoi', default=1.0)
 @click.option('--teststat', type=click.Choice(['q', 'qtilde']), default='qtilde')
+@click.option(
+    '--backend',
+    type=click.Choice(['numpy', 'pytorch', 'tensorflow', 'torch', 'tf']),
+    help='The tensor backend used for the calculation.',
+    default='numpy',
+)
 @click.option('--optimizer')
 @click.option('--optconf', type=EqDelimStringParamType(), multiple=True)
 def cls(
-    workspace, output_file, measurement, patch, testpoi, teststat, optimizer, optconf
+    workspace,
+    output_file,
+    measurement,
+    patch,
+    testpoi,
+    teststat,
+    backend,
+    optimizer,
+    optconf,
 ):
     with click.open_file(workspace, 'r') as specstream:
         wspec = json.load(specstream)
@@ -249,6 +263,14 @@ def cls(
         },
     )
 
+    # set the backend if not NumPy
+    if backend in ['pytorch', 'torch']:
+        set_backend(tensor.pytorch_backend())
+    elif backend in ['tensorflow', 'tf']:
+        from tensorflow import Session
+
+        set_backend(tensor.tensorflow_backend(session=Session()))
+
     optconf = {k: v for item in optconf for k, v in item.items()}
 
     # set the new optimizer
@@ -257,7 +279,13 @@ def cls(
         set_backend(get_backend()[0], new_optimizer(**optconf))
 
     result = hypotest(testpoi, w.data(p), p, qtilde=is_qtilde, return_expected_set=True)
-    result = {'CLs_obs': result[0].tolist()[0], 'CLs_exp': result[-1].ravel().tolist()}
+    if get_backend()[0].name != 'numpy':
+        result = {'CLs_obs': result[0].tolist(), 'CLs_exp': result[-1].tolist()}
+    else:
+        result = {
+            'CLs_obs': result[0].tolist()[0],
+            'CLs_exp': result[-1].ravel().tolist(),
+        }
 
     if output_file is None:
         click.echo(json.dumps(result, indent=4, sort_keys=True))
