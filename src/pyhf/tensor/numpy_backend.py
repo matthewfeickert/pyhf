@@ -109,6 +109,25 @@ class numpy_backend(object):
         return true_callable() if predicate else false_callable()
 
     def less(self, tensor_in_1, tensor_in_2):
+        """
+        The boolean value of :code:`(tensor_in_1 < tensor_in_2)` element-wise
+
+        Example:
+
+            >>> import pyhf
+            >>> pyhf.set_backend(pyhf.tensor.numpy_backend())
+            >>> a = pyhf.tensorlib.astensor([4])
+            >>> b = pyhf.tensorlib.astensor([5])
+            >>> pyhf.tensorlib.less(a, b)
+            array([ True])
+
+        Args:
+            tensor_in_1 (`Tensor`): The first tensor
+            tensor_in_2 (`Tensor`): The tensor of same type as :code:`tensor_in_1`
+
+        Returns:
+            NumPy ndarray: The bool of the comparison
+        """
         tensor_in_1 = self.astensor(tensor_in_1)
         tensor_in_2 = self.astensor(tensor_in_2)
         return np.less(tensor_in_1, tensor_in_2)

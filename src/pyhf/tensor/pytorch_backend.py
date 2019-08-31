@@ -60,6 +60,25 @@ class pytorch_backend(object):
         return true_callable() if predicate else false_callable()
 
     def less(self, tensor_in_1, tensor_in_2):
+        """
+        The boolean value of :code:`(tensor_in_1 < tensor_in_2)` element-wise
+
+        Example:
+
+            >>> import pyhf
+            >>> pyhf.set_backend(pyhf.tensor.pytorch_backend())
+            >>> a = pyhf.tensorlib.astensor([4])
+            >>> b = pyhf.tensorlib.astensor([5])
+            >>> pyhf.tensorlib.less(a, b)
+            tensor([True])
+
+        Args:
+            tensor_in_1 (`Tensor`): The first tensor
+            tensor_in_2 (`Tensor`): The tensor of same type as :code:`tensor_in_1`
+
+        Returns:
+            PyTorch Tensor: The bool of the comparison
+        """
         tensor_in_1 = self.astensor(tensor_in_1)
         tensor_in_2 = self.astensor(tensor_in_2)
         return torch.lt(tensor_in_1, tensor_in_2)
