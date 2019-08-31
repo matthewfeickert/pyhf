@@ -132,6 +132,30 @@ class tensorflow_backend(object):
         return tf.math.less(tensor_in_1, tensor_in_2)
 
     def greater(self, tensor_in_1, tensor_in_2):
+        """
+        The boolean value of :code:`(tensor_in_1 > tensor_in_2)` element-wise
+
+        Example:
+
+            >>> import pyhf
+            >>> import tensorflow as tf
+            >>> sess = tf.Session()
+            ...
+            >>> pyhf.set_backend(pyhf.tensor.tensorflow_backend(session=sess))
+            >>> a = pyhf.tensorlib.astensor([4])
+            >>> b = pyhf.tensorlib.astensor([5])
+            >>> with sess.as_default():
+            ...   sess.run(pyhf.tensorlib.greater(b, a))
+            ...
+            array([ True])
+
+        Args:
+            tensor_in_1 (`Tensor`): The first tensor
+            tensor_in_2 (`Tensor`): The tensor of same type as :code:`tensor_in_1`
+
+        Returns:
+            TensorFlow Tensor: The bool of the comparison
+        """
         tensor_in_1 = self.astensor(tensor_in_1)
         tensor_in_2 = self.astensor(tensor_in_2)
         return tf.math.greater(tensor_in_1, tensor_in_2)

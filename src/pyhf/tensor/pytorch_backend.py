@@ -84,6 +84,25 @@ class pytorch_backend(object):
         return torch.lt(tensor_in_1, tensor_in_2)
 
     def greater(self, tensor_in_1, tensor_in_2):
+        """
+        The boolean value of :code:`(tensor_in_1 > tensor_in_2)` element-wise
+
+        Example:
+
+            >>> import pyhf
+            >>> pyhf.set_backend(pyhf.tensor.pytorch_backend())
+            >>> a = pyhf.tensorlib.astensor([4])
+            >>> b = pyhf.tensorlib.astensor([5])
+            >>> pyhf.tensorlib.greater(b, a)
+            tensor([True])
+
+        Args:
+            tensor_in_1 (`Tensor`): The first tensor
+            tensor_in_2 (`Tensor`): The tensor of same type as :code:`tensor_in_1`
+
+        Returns:
+            PyTorch Tensor: The bool of the comparison
+        """
         tensor_in_1 = self.astensor(tensor_in_1)
         tensor_in_2 = self.astensor(tensor_in_2)
         return torch.gt(tensor_in_1, tensor_in_2)
