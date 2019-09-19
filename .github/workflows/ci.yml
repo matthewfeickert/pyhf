@@ -44,7 +44,7 @@ jobs:
     - name: Run benchmarks
       # if: github.event_name == 'schedule' && matrix.python-version == 3.7
       run: |
-        python -m pytest -r sx tests/benchmarks/test_benchmark.py
+        python -m pytest -r sx tests/benchmarks/test_benchmark.py -k 'not numpy_minuit-200_bins'
 
   # docs:
   #
