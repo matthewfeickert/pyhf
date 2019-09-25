@@ -35,10 +35,12 @@ env:
 
 jobs:
   include:
+  - name: "Python 2.7"
   - name: "Python 2.7 Notebook Tests"
     python: '2.7'
     script:
       - python -m pytest tests/test_notebooks.py
+    after_success: skip
   - stage: docs
     python: '3.7'
     before_install:
