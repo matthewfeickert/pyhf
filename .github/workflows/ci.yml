@@ -44,12 +44,14 @@ jobs:
       run: |
         python -m pytest -r sx --ignore tests/benchmarks/ --ignore tests/test_notebooks.py
         ls -lhtra
-        ls -lhtra htmlcov/
+        ls -lhtr htmlcov/
+        ls -lhtr .coverage/
     - name: Check coverage with Coveralls
       if: matrix.python-version == 3.7 && matrix.platform == 'ubuntu-latest'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
+        path-to-lcov: ./.coverage/lcov.info
     - name: Run benchmarks
       if: github.event_name == 'schedule' && matrix.python-version == 3.7
       run: |
