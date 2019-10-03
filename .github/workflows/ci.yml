@@ -49,7 +49,7 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.github_token }}
-        path-to-lcov: ./.coverage
+        path-to-lcov: ./htmlcov/status.json
     - name: Run benchmarks
       if: github.event_name == 'schedule' && matrix.python-version == 3.7
       run: |
