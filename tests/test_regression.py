@@ -186,32 +186,31 @@ def test_sbottom_regionB_1400_550_60(
     )
 
 
-def test_sbottom_regionC_1000_205_60(
+def test_sbottom_regionC_1600_850_60(
     sbottom_likelihoods_download, get_json_from_tarfile
 ):
     sbottom_regionC_bkgonly_json = get_json_from_tarfile(
         sbottom_likelihoods_download, "RegionC/BkgOnly.json"
     )
-    sbottom_regionC_1000_205_60_patch_json = get_json_from_tarfile(
-        sbottom_likelihoods_download, "RegionC/patch.sbottom_1000_205_60.json"
+    sbottom_regionC_1600_850_60_patch_json = get_json_from_tarfile(
+        sbottom_likelihoods_download, "RegionC/patch.sbottom_1600_850_60.json"
     )
     CLs_obs, CLs_exp = calculate_CLs(
-        sbottom_regionC_bkgonly_json, sbottom_regionC_1000_205_60_patch_json
+        sbottom_regionC_bkgonly_json, sbottom_regionC_1600_850_60_patch_json
     )
-    assert CLs_obs == pytest.approx(0.9424009499519606, rel=1e-5)
-    # TODO: Lower tolerance to 1e-5 once Python 2.7 is dropped
+    assert CLs_obs == pytest.approx(0.7110235098875887, rel=1e-5)
     assert np.all(
         np.isclose(
             np.array(CLs_exp),
             np.array(
                 [
-                    0.8906470732412857,
-                    0.9280262743211622,
-                    0.9614288407343238,
-                    0.9857553063165135,
-                    0.9971958190844394,
+                    0.295548873483498,
+                    0.4446881157432793,
+                    0.6371470258917161,
+                    0.8336147540981491,
+                    0.958590074031409,
                 ]
             ),
-            rtol=1e-4,
+            rtol=1e-5,
         )
     )
