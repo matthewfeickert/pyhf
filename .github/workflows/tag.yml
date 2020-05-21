@@ -78,7 +78,7 @@ jobs:
         git tag -n99 -l $NEW_TAG
 
         # CHANGES=$(git log --pretty=format:'%s' $OLD_TAG..HEAD -i -E --grep='^([a-z]*?):')
-        CHANGES="chore: Migrate metadata and setup options to setup.cfg"
+        CHANGES=$(git log --pretty=format:'%s' $OLD_TAG..HEAD -i -E --grep='^([a-z]*?):' | head -n 10)
         CHANGES_NEWLINE="$(echo "${CHANGES}" | sed -e 's/^/  - /')"
         SANITIZED_CHANGES=$(echo "${CHANGES}" | sed -e 's/^/<li>/' -e 's|$|</li>|' -e 's/(#[0-9]\+)//' )
         echo "::set-env name=CHANGES::${SANITIZED_CHANGES//$'\n'/}"
@@ -92,19 +92,12 @@ jobs:
       uses: actions/github-script@v1.1.0
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        # script: |
-        #   github.issues.createComment({
-        #       issue_number: context.issue.number,
-        #       owner: context.repo.owner,
-        #       repo: context.repo.repo,
-        #       body: "I've queued this up. When it gets merged, I'll create a ${{ env['BV_PART'] }} release from ${{ env['OLD_TAG'] }} → ${{ env['NEW_TAG'] }} which includes the following ${{ env['NUM_CHANGES'] }} change(s) [including this PR]:<br />${{ env['CHANGES'] }}<br />If you make any more changes, you probably want to re-trigger me again by removing the `bumpversion/${{ env['BV_PART'] }}` label and then adding it back again."
-        #     })
         script: |
           github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "I've queued this up. When it gets merged, I'll create a ${{ env['BV_PART'] }} release from ${{ env['OLD_TAG'] }} → ${{ env['NEW_TAG'] }} which includes the following ${{ env['NUM_CHANGES'] }} change(s) [including this PR]:<br /><br />If you make any more changes, you probably want to re-trigger me again by removing the `bumpversion/${{ env['BV_PART'] }}` label and then adding it back again."
+              body: "I've queued this up. When it gets merged, I'll create a ${{ env['BV_PART'] }} release from ${{ env['OLD_TAG'] }} → ${{ env['NEW_TAG'] }} which includes the following ${{ env['NUM_CHANGES'] }} change(s) [including this PR]:<br />${{ env['CHANGES'] }}<br />If you make any more changes, you probably want to re-trigger me again by removing the `bumpversion/${{ env['BV_PART'] }}` label and then adding it back again."
             })
     - name: Push changes
       if: >-
