@@ -77,7 +77,8 @@ jobs:
         echo "::set-env name=NEW_TAG::${NEW_TAG}"
         git tag -n99 -l $NEW_TAG
 
-        CHANGES=$(git log --pretty=format:'%s' $OLD_TAG..HEAD -i -E --grep='^([a-z]*?):')
+        # CHANGES=$(git log --pretty=format:'%s' $OLD_TAG..HEAD -i -E --grep='^([a-z]*?):')
+        CHANGES="chore: Migrate metadata and setup options to setup.cfg"
         CHANGES_NEWLINE="$(echo "${CHANGES}" | sed -e 's/^/  - /')"
         SANITIZED_CHANGES=$(echo "${CHANGES}" | sed -e 's/^/<li>/' -e 's|$|</li>|' -e 's/(#[0-9]\+)//' )
         echo "::set-env name=CHANGES::${SANITIZED_CHANGES//$'\n'/}"
