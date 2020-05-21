@@ -78,7 +78,7 @@ jobs:
         git tag -n99 -l $NEW_TAG
 
         # CHANGES=$(git log --pretty=format:'%s' $OLD_TAG..HEAD -i -E --grep='^([a-z]*?):')
-        CHANGES=$(git log --pretty=format:'%s' $OLD_TAG..HEAD -i -E --grep='^([a-z]*?):' | head -n 8)
+        CHANGES=$(git log --pretty=format:'%s' $OLD_TAG..HEAD -i -E --grep='^([a-z]*?):' | head -n 7)
         CHANGES_NEWLINE="$(echo "${CHANGES}" | sed -e 's/^/  - /')"
         SANITIZED_CHANGES=$(echo "${CHANGES}" | sed -e 's/^/<li>/' -e 's|$|</li>|' -e 's/(#[0-9]\+)//' )
         echo "::set-env name=CHANGES::${SANITIZED_CHANGES//$'\n'/}"
