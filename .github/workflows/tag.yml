@@ -122,6 +122,12 @@ jobs:
               repo: context.repo.repo,
               labels: ["bumpversion/${{ env['BV_PART'] }}"]
             })
+          github.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['Failed tag']
+            })
 
   always_job:
     name: Always run job
