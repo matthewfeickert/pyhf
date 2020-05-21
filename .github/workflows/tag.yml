@@ -121,7 +121,8 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ["bumpversion/${{ env['BV_PART'] }}"]
+              labels: ["bumpversion/${{ env['BV_PART'] }}"],
+              name: deleteLabel
             })
           github.issues.addLabels({
               issue_number: context.issue.number,
