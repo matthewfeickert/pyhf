@@ -1,0 +1,29 @@
+﻿pyhf.contrib.viz.brazil
+=======================
+
+.. automodule:: pyhf.contrib.viz.brazil
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      plot_results
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

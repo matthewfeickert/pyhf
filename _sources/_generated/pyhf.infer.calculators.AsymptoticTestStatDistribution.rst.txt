@@ -1,0 +1,25 @@
+﻿pyhf.infer.calculators.AsymptoticTestStatDistribution
+=====================================================
+
+.. currentmodule:: pyhf.infer.calculators
+
+.. autoclass:: AsymptoticTestStatDistribution
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AsymptoticTestStatDistribution.__init__
+      ~AsymptoticTestStatDistribution.cdf
+      ~AsymptoticTestStatDistribution.expected_value
+      ~AsymptoticTestStatDistribution.pvalue
+   
+   
+
+   
+   
+   
