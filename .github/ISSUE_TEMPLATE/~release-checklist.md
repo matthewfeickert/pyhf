@@ -30,8 +30,8 @@ about: Checklist for core developers to complete as part of making a release
 * [ ] Verify there is a new [Zenodo DOI](https://doi.org/10.5281/zenodo.1169739) minted for the release.
    - [ ] Verify that the new release archive metadata on Zenodo matches is being picked up as expected from [`CITATION.cff`](https://github.com/scikit-hep/pyhf/blob/master/CITATION.cff).
 * [ ] Verify that a Binder has properly built for the new release.
-* [ ] Watch for a GitHub notification that there is an automatic PR to the
-  [Conda-forge feedstock](https://github.com/conda-forge/pyhf-feedstock). This may take multiple hours to happen. If there are any changes needed to the Conda-forge release make them **from a personal account** and not from an organization account to have workflows properly trigger.
+* [ ] Watch for a GitHub notification that there is an automatic PR to the [Conda-forge feedstock](https://github.com/conda-forge/pyhf-feedstock). This may take multiple hours to happen. If there are any changes needed to the Conda-forge release make them **from a personal account** and not from an organization account to have workflows properly trigger.
+   - [ ] Check if any requirements need to be updated by commenting "@conda-grayskull show requirements" on the PR.
    - [ ] Verify the requirements in the [Conda-forge feedstock](https://github.com/conda-forge/pyhf-feedstock) recipe `meta.yaml` match those in `setup.cfg` and `pyproject.toml`.
 
 ## After Release
