@@ -1,9 +1,10 @@
-import ROOT
-
 import json
 import sys
 
-source_data = json.load(open(sys.argv[1]))
+import ROOT
+
+with open(sys.argv[1]) as source_file:
+    source_data = json.load(source_file)
 root_file = sys.argv[2]
 
 f = ROOT.TFile(root_file, 'RECREATE')

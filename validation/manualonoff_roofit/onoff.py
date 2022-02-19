@@ -1,7 +1,8 @@
 import json
 import ROOT
 
-d = json.load(open('data/source.json'))
+with open("data/source.json") as source_file:
+    d = json.load(source_file)
 nobs = d['bindata']['data'][0]
 b = d['bindata']['bkg'][0]
 deltab = d['bindata']['bkgerr'][0]
