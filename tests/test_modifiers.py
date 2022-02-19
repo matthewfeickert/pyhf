@@ -189,7 +189,8 @@ def test_invalid_bin_wise_modifier(datadir, patch_file):
 
     assert pyhf.Model(spec)
 
-    patch = JsonPatch.from_string(open(datadir.join(patch_file)).read())
+    with open(datadir.join(patch_file)) as read_file:
+        patch = JsonPatch.from_string(read_file.read())
     bad_spec = patch.apply(spec)
 
     with pytest.raises(pyhf.exceptions.InvalidModifier):
