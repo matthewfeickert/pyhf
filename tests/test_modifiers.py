@@ -184,7 +184,8 @@ def test_invalid_bin_wise_modifier(datadir, patch_file):
     Test that bin-wise modifiers will raise an exception if their data shape
     differs from their sample's.
     """
-    spec = json.load(open(datadir.join("spec.json")))
+    with open(datadir.join("spec.json")) as spec_file:
+        spec = json.load(spec_file)
 
     assert pyhf.Model(spec)
 
