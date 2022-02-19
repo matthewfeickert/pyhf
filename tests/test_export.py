@@ -53,7 +53,8 @@ def spec_staterror():
 
 
 def spec_histosys():
-    source = json.load(open('validation/data/2bin_histosys_example2.json'))
+    with open("validation/data/2bin_histosys_example2.json") as source_file:
+        source = json.load(source_file)
     spec = {
         'channels': [
             {
@@ -88,7 +89,8 @@ def spec_histosys():
 
 
 def spec_normsys():
-    source = json.load(open('validation/data/2bin_histosys_example2.json'))
+    with open("validation/data/2bin_histosys_example2.json") as source_file:
+        source = json.load(source_file)
     spec = {
         'channels': [
             {
@@ -120,7 +122,8 @@ def spec_normsys():
 
 
 def spec_shapesys():
-    source = json.load(open('validation/data/2bin_histosys_example2.json'))
+    with open("validation/data/2bin_histosys_example2.json") as source_file:
+        source = json.load(source_file)
     spec = {
         'channels': [
             {
@@ -148,7 +151,8 @@ def spec_shapesys():
 
 
 def spec_shapefactor():
-    source = json.load(open('validation/data/2bin_histosys_example2.json'))
+    with open("validation/data/2bin_histosys_example2.json") as source_file:
+        source = json.load(source_file)
     spec = {
         'channels': [
             {
