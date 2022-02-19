@@ -12,7 +12,8 @@ from unittest import mock
     ids=['patchset_good.json', 'patchset_good_2_patches.json'],
 )
 def patchset(datadir, request):
-    spec = json.load(open(datadir.join(request.param)))
+    with open(datadir.join(request.param)) as spec_file:
+        spec = json.load(spec_file)
     return pyhf.PatchSet(spec)
 
 
@@ -32,7 +33,8 @@ def patch():
     ],
 )
 def test_patchset_invalid_spec(datadir, patchset_file):
-    patchsetspec = json.load(open(datadir.join(patchset_file)))
+    with open(datadir.join(patchset_file)) as patchset_spec_file:
+        patchsetspec = json.load(patchset_spec_file)
     with pytest.raises(pyhf.exceptions.InvalidSpecification):
         pyhf.PatchSet(patchsetspec)
 
@@ -46,7 +48,8 @@ def test_patchset_invalid_spec(datadir, patchset_file):
     ],
 )
 def test_patchset_bad(datadir, patchset_file):
-    patchsetspec = json.load(open(datadir.join(patchset_file)))
+    with open(datadir.join(patchset_file)) as patchset_spec_file:
+        patchsetspec = json.load(patchset_spec_file)
     with pytest.raises(pyhf.exceptions.InvalidPatchSet):
         pyhf.PatchSet(patchsetspec)
 
@@ -97,20 +100,27 @@ def test_patchset_repr(patchset):
 
 
 def test_patchset_verify(datadir):
-    patchset = pyhf.PatchSet(json.load(open(datadir.join('example_patchset.json'))))
-    ws = pyhf.Workspace(json.load(open(datadir.join('example_bkgonly.json'))))
+    with open(datadir.join("example_patchset.json")) as patchset_file:
+        patchset = pyhf.PatchSet(json.load(patchset_file))
+    with open(datadir.join("example_bkgonly.json")) as bkg_file:
+        ws = pyhf.Workspace(json.load(bkg_file))
+
     assert patchset.verify(ws) is None
 
 
 def test_patchset_verify_failure(datadir):
-    patchset = pyhf.PatchSet(json.load(open(datadir.join('example_patchset.json'))))
+    with open(datadir.join("example_patchset.json")) as patchset_file:
+        patchset = pyhf.PatchSet(json.load(patchset_file))
     with pytest.raises(pyhf.exceptions.PatchSetVerificationError):
         assert patchset.verify({})
 
 
 def test_patchset_apply(datadir):
-    patchset = pyhf.PatchSet(json.load(open(datadir.join('example_patchset.json'))))
-    ws = pyhf.Workspace(json.load(open(datadir.join('example_bkgonly.json'))))
+    with open(datadir.join("example_patchset.json")) as patchset_file:
+        patchset = pyhf.PatchSet(json.load(patchset_file))
+    with open(datadir.join("example_bkgonly.json")) as bkg_file:
+        ws = pyhf.Workspace(json.load(bkg_file))
+
     with mock.patch('pyhf.patchset.PatchSet.verify') as m:
         assert m.call_count == 0
         assert patchset.apply(ws, 'patch_channel1_signal_syst1')
@@ -134,9 +144,9 @@ def test_patch_equality(patch):
 
 
 def test_patchset_get_string_values(datadir):
-    patchset = pyhf.PatchSet(
-        json.load(open(datadir.join('patchset_good_stringvalues.json')))
-    )
+    with open(datadir.join("patchset_good_stringvalues.json")) as patchset_file:
+        patchset = pyhf.PatchSet(json.load(patchset_file))
+
     assert patchset["Gtt_2100_5000_800"]
     assert patchset["Gbb_2200_5000_800"]
     assert patchset[[2100, 800, "Gtt"]]
