@@ -320,10 +320,7 @@ class pytorch_backend:
             PyTorch tensor: The value of the :math:`q`-th percentile of the tensor along the specified axis.
 
         """
-        # Interpolation options not yet supported
-        # c.f. https://github.com/pytorch/pytorch/pull/49267
-        # c.f. https://github.com/pytorch/pytorch/pull/59397
-        return torch.quantile(tensor_in, q / 100, dim=axis)
+        return torch.quantile(tensor_in, q / 100, dim=axis, interpolation=interpolation)
 
     def stack(self, sequence, axis=0):
         return torch.stack(sequence, dim=axis)
