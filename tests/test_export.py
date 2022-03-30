@@ -224,23 +224,25 @@ def test_export_measurement():
 
 
 @pytest.mark.parametrize(
-    "spec, has_root_data, attrs",
+    "spec, has_root_data, attrs, modtype",
     [
-        (spec_staterror(), True, ['Activate', 'HistoName']),
-        (spec_histosys(), True, ['HistoNameHigh', 'HistoNameLow']),
-        (spec_normsys(), False, ['High', 'Low']),
-        (spec_shapesys(), True, ['ConstraintType', 'HistoName']),
-        (spec_shapefactor(), False, []),
+        (spec_staterror(), True, ['Activate', 'HistoName'], 'staterror'),
+        (spec_histosys(), True, ['HistoNameHigh', 'HistoNameLow'], 'histosys'),
+        (spec_normsys(), False, ['High', 'Low'], 'normsys'),
+        (spec_shapesys(), True, ['ConstraintType', 'HistoName'], 'shapesys'),
+        (spec_shapefactor(), False, [], 'shapefactor'),
     ],
     ids=['staterror', 'histosys', 'normsys', 'shapesys', 'shapefactor'],
 )
-def test_export_modifier(mocker, caplog, spec, has_root_data, attrs):
+def test_export_modifier(mocker, caplog, spec, has_root_data, attrs, modtype):
     channelspec = spec['channels'][0]
     channelname = channelspec['name']
     samplespec = channelspec['samples'][1]
     samplename = samplespec['name']
     sampledata = samplespec['data']
     modifierspec = samplespec['modifiers'][0]
+
+    assert modifierspec['type'] == modtype
 
     mocker.patch('pyhf.writexml._ROOT_DATA_FILE')
 
@@ -255,7 +257,9 @@ def test_export_modifier(mocker, caplog, spec, has_root_data, attrs):
     assert "Skipping modifier" not in caplog.text
 
     # if the modifier is a staterror, it has no Name
-    if 'Name' in modifier.attrib:
+    if modtype == 'staterror':
+        assert 'Name' not in modifier.attrib
+    else:
         assert modifier.attrib['Name'] == modifierspec['name']
     assert all(attr in modifier.attrib for attr in attrs)
     assert pyhf.writexml._ROOT_DATA_FILE.__setitem__.called == has_root_data
@@ -352,17 +356,14 @@ def test_export_sample_zerodata(mocker, spec):
     sampledata = [0.0] * len(samplespec['data'])
 
     mocker.patch('pyhf.writexml._ROOT_DATA_FILE')
-    # make sure no RuntimeWarning, https://stackoverflow.com/a/45671804
-    with pytest.warns(None) as record:
-        for modifierspec in samplespec['modifiers']:
-            pyhf.writexml.build_modifier(
-                {'measurements': [{'config': {'parameters': []}}]},
-                modifierspec,
-                channelname,
-                samplename,
-                sampledata,
-            )
-    assert not record.list
+    for modifierspec in samplespec['modifiers']:
+        pyhf.writexml.build_modifier(
+            {'measurements': [{'config': {'parameters': []}}]},
+            modifierspec,
+            channelname,
+            samplename,
+            sampledata,
+        )
 
 
 @pytest.mark.parametrize(
@@ -424,9 +425,37 @@ def test_integer_data(datadir, mocker):
     """
     Test that a spec with only integer data will be written correctly
     """
-    spec = json.load(open(datadir.join("workspace_integer_data.json")))
+    with open(datadir.joinpath("workspace_integer_data.json")) as spec_file:
+        spec = json.load(spec_file)
     channel_spec = spec["channels"][0]
     mocker.patch("pyhf.writexml._ROOT_DATA_FILE")
 
     channel = pyhf.writexml.build_channel(spec, channel_spec, {})
     assert channel
+
+
+@pytest.mark.parametrize(
+    "fname,val,low,high",
+    [
+        ('workspace_no_parameter_inits.json', '1', '-5', '5'),
+        ('workspace_no_parameter_bounds.json', '5', '0', '10'),
+    ],
+    ids=['no_inits', 'no_bounds'],
+)
+def test_issue1814(datadir, mocker, fname, val, low, high):
+    with open(datadir / fname) as spec_file:
+        spec = json.load(spec_file)
+
+    modifierspec = {'data': None, 'name': 'mu_sig', 'type': 'normfactor'}
+    channelname = None
+    samplename = None
+    sampledata = None
+
+    modifier = pyhf.writexml.build_modifier(
+        spec, modifierspec, channelname, samplename, sampledata
+    )
+    assert modifier is not None
+    assert sorted(modifier.keys()) == ['High', 'Low', 'Name', 'Val']
+    assert modifier.get('Val') == val
+    assert modifier.get('Low') == low
+    assert modifier.get('High') == high

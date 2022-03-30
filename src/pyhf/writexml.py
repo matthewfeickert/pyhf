@@ -2,13 +2,13 @@ import logging
 
 from pathlib import Path
 import shutil
-import pkg_resources
 import xml.etree.ElementTree as ET
 import numpy as np
 
 import uproot
 
 from pyhf.mixins import _ChannelSummaryMixin
+from pyhf.schema import path as schema_path
 
 _ROOT_DATA_FILE = None
 
@@ -178,8 +178,8 @@ def build_modifier(spec, modifierspec, channelname, samplename, sampledata):
         high = 10
         for p in spec['measurements'][0]['config']['parameters']:
             if p['name'] == modifierspec['name']:
-                val = p['inits'][0]
-                low, high = p['bounds'][0]
+                val = p.get('inits', [val])[0]
+                low, high = p.get('bounds', [[low, high]])[0]
         attrs['Val'] = str(val)
         attrs['Low'] = str(low)
         attrs['High'] = str(high)
@@ -188,6 +188,7 @@ def build_modifier(spec, modifierspec, channelname, samplename, sampledata):
         attrs['HistoName'] = _make_hist_name(
             channelname, samplename, modifierspec['name']
         )
+        # must be deleted, HiFa XML specification does not support 'Name'
         del attrs['Name']
         # need to make this a relative uncertainty stored in ROOT file
         _export_root_histogram(
@@ -276,7 +277,7 @@ def writexml(spec, specdir, data_rootdir, resultprefix):
     global _ROOT_DATA_FILE
 
     shutil.copyfile(
-        pkg_resources.resource_filename(__name__, 'schemas/HistFactorySchema.dtd'),
+        schema_path.joinpath('HistFactorySchema.dtd'),
         Path(specdir).parent.joinpath('HistFactorySchema.dtd'),
     )
     combination = ET.Element(

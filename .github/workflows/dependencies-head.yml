@@ -12,8 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: [3.9]
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -31,7 +31,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest -r sx --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
+        pytest --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
 
   scipy:
 
@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -61,7 +61,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest -r sx --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
+        pytest --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
 
   iminuit:
 
@@ -69,7 +69,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -87,7 +87,7 @@ jobs:
         python -m pip list
     - name: Test with pytest
       run: |
-        pytest -r sx --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
+        pytest --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
 
   uproot4:
 
@@ -95,7 +95,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -112,7 +112,7 @@ jobs:
         python -m pip list
     - name: Test with pytest
       run: |
-        pytest -r sx --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
+        pytest --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
 
   pytest:
 
@@ -120,7 +120,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -137,4 +137,4 @@ jobs:
         python -m pip list
     - name: Test with pytest
       run: |
-        pytest -r sx --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py
+        pytest --ignore tests/benchmarks/ --ignore tests/contrib --ignore tests/test_notebooks.py

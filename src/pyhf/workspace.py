@@ -10,7 +10,7 @@ import jsonpatch
 import copy
 import collections
 from pyhf import exceptions
-from pyhf import utils
+from pyhf import schema
 from pyhf.pdf import Model
 from pyhf.mixins import _ChannelSummaryMixin
 
@@ -286,16 +286,28 @@ class Workspace(_ChannelSummaryMixin, dict):
 
     valid_joins = ['none', 'outer', 'left outer', 'right outer']
 
-    def __init__(self, spec, **config_kwargs):
-        """Workspaces hold the model, data and measurements."""
+    def __init__(self, spec, validate: bool = True, **config_kwargs):
+        """
+        Workspaces hold the model, data and measurements.
+
+        Args:
+            spec (:obj:`jsonable`): The HistFactory JSON specification
+            validate (:obj:`bool`): Whether to validate against a JSON schema
+            config_kwargs: Possible keyword arguments for the workspace configuration
+
+        Returns:
+            model (:class:`~pyhf.workspace.Workspace`): The Workspace instance
+
+        """
         spec = copy.deepcopy(spec)
         super().__init__(spec, channels=spec['channels'])
         self.schema = config_kwargs.pop('schema', 'workspace.json')
         self.version = config_kwargs.pop('version', spec.get('version', None))
 
         # run jsonschema validation of input specification against the (provided) schema
-        log.info(f"Validating spec against schema: {self.schema}")
-        utils.validate(self, self.schema, version=self.version)
+        if validate:
+            log.info(f"Validating spec against schema: {self.schema}")
+            schema.validate(self, self.schema, version=self.version)
 
         self.measurement_names = []
         for measurement in self.get('measurements', []):
@@ -304,6 +316,11 @@ class Workspace(_ChannelSummaryMixin, dict):
         self.observations = {}
         for obs in self['observations']:
             self.observations[obs['name']] = obs['data']
+
+        if config_kwargs:
+            raise exceptions.Unsupported(
+                f"Unsupported options were passed in: {list(config_kwargs.keys())}."
+            )
 
     def __eq__(self, other):
         """Equality is defined as equal dict representations."""
@@ -369,7 +386,7 @@ class Workspace(_ChannelSummaryMixin, dict):
         else:
             raise exceptions.InvalidMeasurement("No measurements have been defined.")
 
-        utils.validate(measurement, 'measurement.json', self.version)
+        schema.validate(measurement, 'measurement.json', self.version)
         return measurement
 
     def model(
@@ -485,11 +502,11 @@ class Workspace(_ChannelSummaryMixin, dict):
         corresponding `observation`.
 
         Args:
-            prune_modifiers: A :obj:`str` or a :obj:`list` of modifiers to prune.
-            prune_modifier_types: A :obj:`str` or a :obj:`list` of modifier types to prune.
-            prune_samples: A :obj:`str` or a :obj:`list` of samples to prune.
-            prune_channels: A :obj:`str` or a :obj:`list` of channels to prune.
-            prune_measurements: A :obj:`str` or a :obj:`list` of measurements to prune.
+            prune_modifiers: A :obj:`list` of modifiers to prune.
+            prune_modifier_types: A :obj:`list` of modifier types to prune.
+            prune_samples: A :obj:`list` of samples to prune.
+            prune_channels: A :obj:`list` of channels to prune.
+            prune_measurements: A :obj:`list` of measurements to prune.
             rename_modifiers: A :obj:`dict` mapping old modifier name to new modifier name.
             rename_samples: A :obj:`dict` mapping old sample name to new sample name.
             rename_channels: A :obj:`dict` mapping old channel name to new channel name.
@@ -622,11 +639,11 @@ class Workspace(_ChannelSummaryMixin, dict):
         The pruned workspace must also be a valid workspace.
 
         Args:
-            modifiers: A :obj:`str` or a :obj:`list` of modifiers to prune.
-            modifier_types: A :obj:`str` or a :obj:`list` of modifier types to prune.
-            samples: A :obj:`str` or a :obj:`list` of samples to prune.
-            channels: A :obj:`str` or a :obj:`list` of channels to prune.
-            measurements: A :obj:`str` or a :obj:`list` of measurements to prune.
+            modifiers: A :obj:`list` of modifiers to prune.
+            modifier_types: A :obj:`list` of modifier types to prune.
+            samples: A :obj:`list` of samples to prune.
+            channels: A :obj:`list` of channels to prune.
+            measurements: A :obj:`list` of measurements to prune.
 
         Returns:
             ~pyhf.workspace.Workspace: A new workspace object with the specified components removed
@@ -779,7 +796,7 @@ class Workspace(_ChannelSummaryMixin, dict):
         return cls(newspec)
 
     @classmethod
-    def build(cls, model, data, name='measurement'):
+    def build(cls, model, data, name='measurement', validate: bool = True):
         """
         Build a workspace from model and data.
 
@@ -787,13 +804,14 @@ class Workspace(_ChannelSummaryMixin, dict):
             model (~pyhf.pdf.Model): A model to store into a workspace
             data (:obj:`tensor`): A array holding observations to store into a workspace
             name (:obj:`str`): The name of the workspace measurement
+            validate (:obj:`bool`): Whether to validate against a JSON schema
 
         Returns:
             ~pyhf.workspace.Workspace: A new workspace object
 
         """
         workspace = copy.deepcopy(dict(channels=model.spec['channels']))
-        workspace['version'] = utils.SCHEMA_VERSION
+        workspace['version'] = schema.version
         workspace['measurements'] = [
             {
                 'name': name,
@@ -818,4 +836,4 @@ class Workspace(_ChannelSummaryMixin, dict):
             {'name': k, 'data': list(data[model.config.channel_slices[k]])}
             for k in model.config.channels
         ]
-        return cls(workspace)
+        return cls(workspace, validate=validate)

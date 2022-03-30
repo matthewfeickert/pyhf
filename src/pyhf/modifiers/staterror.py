@@ -1,14 +1,16 @@
 import logging
+from typing import List
 
 import pyhf
 from pyhf import events
-from pyhf.tensor.manager import get_backend
+from pyhf.exceptions import InvalidModifier
 from pyhf.parameters import ParamViewer
+from pyhf.tensor.manager import get_backend
 
 log = logging.getLogger(__name__)
 
 
-def required_parset(sigmas, fixed):
+def required_parset(sigmas, fixed: List[bool]):
     n_parameters = len(sigmas)
     return {
         'paramset_type': 'constrained_by_normal',
@@ -53,8 +55,8 @@ class staterror_builder:
     def finalize(self):
         default_backend = pyhf.default_backend
 
-        for modifier in self.builder_data.values():
-            for sample in modifier.values():
+        for modifier_name, modifier in self.builder_data.items():
+            for sample_name, sample in modifier.items():
                 sample["data"]["mask"] = default_backend.concatenate(
                     sample["data"]["mask"]
                 )
@@ -64,6 +66,16 @@ class staterror_builder:
                 sample["data"]["nom_data"] = default_backend.concatenate(
                     sample["data"]["nom_data"]
                 )
+                if len(sample["data"]["nom_data"]) != len(sample["data"]["uncrt"]):
+                    _modifier_type, _modifier_name = modifier_name.split("/")
+                    _sample_data_len = len(sample["data"]["nom_data"])
+                    _uncrt_len = len(sample["data"]["uncrt"])
+                    raise InvalidModifier(
+                        f"The '{sample_name}' sample {_modifier_type} modifier"
+                        + f" '{_modifier_name}' has data shape inconsistent with the sample.\n"
+                        + f"{sample_name} has 'data' of length {_sample_data_len} but {_modifier_name}"
+                        + f" has 'data' of length {_uncrt_len}."
+                    )
 
         for modname in self.builder_data.keys():
             parname = modname.split('/')[1]
@@ -104,7 +116,8 @@ class staterror_builder:
             for modifier_data in self.builder_data[modname].values():
                 modifier_data['data']['mask'] = masks[modname]
             sigmas = relerrs[masks[modname]]
-            fixed = [s == 0 for s in sigmas]
+            # list of bools, consistent with other modifiers (no numpy.bool_)
+            fixed = default_backend.tolist(sigmas == 0)
             # ensures non-Nan constraint term, but in a future PR we need to remove constraints for these
             sigmas[fixed] = 1.0
             self.required_parsets.setdefault(parname, [required_parset(sigmas, fixed)])

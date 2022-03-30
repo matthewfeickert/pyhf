@@ -179,8 +179,8 @@ class jax_backend:
 
     def tolist(self, tensor_in):
         try:
-            return np.asarray(tensor_in).tolist()
-        except AttributeError:
+            return jnp.asarray(tensor_in).tolist()
+        except (TypeError, ValueError):
             if isinstance(tensor_in, list):
                 return tensor_in
             raise
@@ -276,6 +276,45 @@ class jax_backend:
 
     def exp(self, tensor_in):
         return jnp.exp(tensor_in)
+
+    def percentile(self, tensor_in, q, axis=None, interpolation="linear"):
+        r"""
+        Compute the :math:`q`-th percentile of the tensor along the specified axis.
+
+        Example:
+
+            >>> import pyhf
+            >>> import jax.numpy as jnp
+            >>> pyhf.set_backend("jax")
+            >>> a = pyhf.tensorlib.astensor([[10, 7, 4], [3, 2, 1]])
+            >>> pyhf.tensorlib.percentile(a, 50)
+            DeviceArray(3.5, dtype=float64)
+            >>> pyhf.tensorlib.percentile(a, 50, axis=1)
+            DeviceArray([7., 2.], dtype=float64)
+
+        Args:
+            tensor_in (`tensor`): The tensor containing the data
+            q (:obj:`float` or `tensor`): The :math:`q`-th percentile to compute
+            axis (`number` or `tensor`): The dimensions along which to compute
+            interpolation (:obj:`str`): The interpolation method to use when the
+             desired percentile lies between two data points ``i < j``:
+
+                - ``'linear'``: ``i + (j - i) * fraction``, where ``fraction`` is the
+                  fractional part of the index surrounded by ``i`` and ``j``.
+
+                - ``'lower'``: ``i``.
+
+                - ``'higher'``: ``j``.
+
+                - ``'midpoint'``: ``(i + j) / 2``.
+
+                - ``'nearest'``: ``i`` or ``j``, whichever is nearest.
+
+        Returns:
+            JAX ndarray: The value of the :math:`q`-th percentile of the tensor along the specified axis.
+
+        """
+        return jnp.percentile(tensor_in, q, axis=axis, interpolation=interpolation)
 
     def stack(self, sequence, axis=0):
         return jnp.stack(sequence, axis=axis)
@@ -438,7 +477,7 @@ class jax_backend:
             >>> import pyhf
             >>> pyhf.set_backend("jax")
             >>> pyhf.tensorlib.normal(0.5, 0., 1.)
-            DeviceArray(0.35206533, dtype=float64)
+            DeviceArray(0.35206533, dtype=float64, weak_type=True)
             >>> values = pyhf.tensorlib.astensor([0.5, 2.0])
             >>> means = pyhf.tensorlib.astensor([0., 2.3])
             >>> sigmas = pyhf.tensorlib.astensor([1., 0.8])
@@ -526,7 +565,7 @@ class jax_backend:
 
     def to_numpy(self, tensor_in):
         """
-        Convert the TensorFlow tensor to a :class:`numpy.ndarray`.
+        Convert the JAX tensor to a :class:`numpy.ndarray`.
 
         Example:
             >>> import pyhf
@@ -550,3 +589,28 @@ class jax_backend:
 
         """
         return np.asarray(tensor_in, dtype=tensor_in.dtype)
+
+    def transpose(self, tensor_in):
+        """
+        Transpose the tensor.
+
+        Example:
+            >>> import pyhf
+            >>> pyhf.set_backend("jax")
+            >>> tensor = pyhf.tensorlib.astensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+            >>> tensor
+            DeviceArray([[1., 2., 3.],
+                         [4., 5., 6.]], dtype=float64)
+            >>> pyhf.tensorlib.transpose(tensor)
+            DeviceArray([[1., 4.],
+                         [2., 5.],
+                         [3., 6.]], dtype=float64)
+
+        Args:
+            tensor_in (:obj:`tensor`): The input tensor object.
+
+        Returns:
+            JAX ndarray: The transpose of the input tensor.
+
+        """
+        return tensor_in.transpose()
