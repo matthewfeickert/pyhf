@@ -39,3 +39,6 @@ def load_schema(schema_id: str):
             schema = json.load(json_schema)
             variables.SCHEMA_CACHE[schema['$id']] = schema
         return variables.SCHEMA_CACHE[schema['$id']]
+
+
+load_schema(f'{variables.SCHEMA_VERSION}/defs.json')
