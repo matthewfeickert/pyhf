@@ -1,0 +1,6 @@
+﻿pyhf.schema.validate
+====================
+
+.. currentmodule:: pyhf.schema
+
+.. autofunction:: validate

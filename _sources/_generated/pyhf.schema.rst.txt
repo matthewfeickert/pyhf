@@ -1,0 +1,11 @@
+﻿pyhf.schema
+===========
+
+.. rubric:: Description
+
+.. automodule:: pyhf.schema
+
+.. currentmodule:: pyhf.schema
+
+
+

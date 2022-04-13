@@ -1,0 +1,6 @@
+﻿pyhf.schema.load\_schema
+========================
+
+.. currentmodule:: pyhf.schema
+
+.. autofunction:: load_schema
