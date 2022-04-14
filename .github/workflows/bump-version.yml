@@ -223,6 +223,14 @@ jobs:
         echo "${CHANGES_NEWLINE}"
         echo ""
 
+        CHANGES_NEWLINE_SORTED="$(echo ${CHANGES_NEWLINE} | sort)"
+        CHANGES_GROUPED="$(echo ${CHANGES_NEWLINE_SORTED} | sed ':a;N;s/^\([^:]\+\): \(.*\)\n\1: \(.*\)$/\1: \o11\2\o11\o11\3/;ta;P;D;ba')"
+        CHANGES_NEWLINE="$(echo ${CHANGES_GROUPED} | sed 's/\o11\+/\n\o11/g;s/: \(.\+\)$/:\n\o11\1/g')"
+
+        echo "CHANGES_NEWLINE:"
+        echo "${CHANGES_NEWLINE}"
+        echo ""
+
         if [ ${{ github.event.inputs.release_candidate }} == 'true' ]; then
             git tag "${NEW_TAG}" "${NEW_TAG}"^{} \
               --force \
