@@ -218,8 +218,6 @@ jobs:
 
         CHANGES=$(git log --pretty=format:'%s' "${OLD_TAG}"..HEAD --regexp-ignore-case --extended-regexp --grep='^([a-z]*?):')
         CHANGES_NEWLINE="$(echo "${CHANGES}" | sed -e 's/^/  - /')"
-        SANITIZED_CHANGES=$(echo "${CHANGES}" | sed -e 's/^/<li>/' -e 's|$|</li>|' -e 's/(#[0-9]\+)//' -e 's/"/'"'"'/g')
-        NUM_CHANGES=$(echo -n "${CHANGES}" | grep -c '^')
 
         if [ ${{ github.event.inputs.release_candidate }} == 'true' ]; then
             git tag "${NEW_TAG}" "${NEW_TAG}"^{} -f -m "$(printf "This is a ${{ github.event.inputs.part }} release candidate from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${CHANGES_NEWLINE}")"
