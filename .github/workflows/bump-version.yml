@@ -36,7 +36,7 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    if: github.repository == 'scikit-hep/pyhf'
+    if: github.repository == 'matthewfeickert/pyhf'
 
     steps:
     # Use GitHub PAT to authenticate so other workflows trigger
