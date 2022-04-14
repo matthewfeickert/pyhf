@@ -220,9 +220,13 @@ jobs:
         CHANGES_NEWLINE="$(echo "${CHANGES}" | sed -e 's/^/  - /')"
 
         if [ ${{ github.event.inputs.release_candidate }} == 'true' ]; then
-            git tag "${NEW_TAG}" "${NEW_TAG}"^{} -f -m "$(printf "This is a ${{ github.event.inputs.part }} release candidate from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${CHANGES_NEWLINE}")"
+            git tag "${NEW_TAG}" "${NEW_TAG}"^{} \
+              --force \
+              --message "$(printf "This is a ${{ github.event.inputs.part }} release candidate from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${CHANGES_NEWLINE}")"
         else
-            git tag "${NEW_TAG}" "${NEW_TAG}"^{} -f -m "$(printf "This is a ${{ github.event.inputs.part }} release from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${CHANGES_NEWLINE}")"
+            git tag "${NEW_TAG}" "${NEW_TAG}"^{} \
+              --force \
+              --message "$(printf "This is a ${{ github.event.inputs.part }} release from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${CHANGES_NEWLINE}")"
         fi
 
         git tag -n99 --list "${NEW_TAG}"
