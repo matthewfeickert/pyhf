@@ -207,7 +207,7 @@ jobs:
         tbump --non-interactive --no-push ${{ github.event.inputs.new_version }}
 
     - name: Update the Git tag annotation
-      if: ${{ github.event.inputs.dry_run }} == 'false'
+      # if: ${{ github.event.inputs.dry_run }} == 'false'
       shell: bash
       run: |
         OLD_TAG=${{ steps.script.outputs.old_tag }}
@@ -218,6 +218,10 @@ jobs:
 
         CHANGES=$(git log --pretty=format:'%s' "${OLD_TAG}"..HEAD --regexp-ignore-case --extended-regexp --grep='^([a-z]*?):')
         CHANGES_NEWLINE="$(echo "${CHANGES}" | sed -e 's/^/  - /')"
+
+        echo "CHANGES_NEWLINE:"
+        echo "${CHANGES_NEWLINE}"
+        echo ""
 
         if [ ${{ github.event.inputs.release_candidate }} == 'true' ]; then
             git tag "${NEW_TAG}" "${NEW_TAG}"^{} \
