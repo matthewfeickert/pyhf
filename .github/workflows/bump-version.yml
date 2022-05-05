@@ -236,11 +236,11 @@ jobs:
         if [ ${{ github.event.inputs.release_candidate }} == 'true' ]; then
             git tag "${NEW_TAG}" "${NEW_TAG}"^{} \
               --force \
-              --message "$(printf "This is a ${{ github.event.inputs.part }} release candidate from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${CHANGES_NEWLINE}")"
+              --message "$(printf "This is a ${{ github.event.inputs.part }} release candidate from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${SANITIZED_CHANGES}")"
         else
             git tag "${NEW_TAG}" "${NEW_TAG}"^{} \
               --force \
-              --message "$(printf "This is a ${{ github.event.inputs.part }} release from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${CHANGES_NEWLINE}")"
+              --message "$(printf "This is a ${{ github.event.inputs.part }} release from ${OLD_TAG} → ${NEW_TAG}.\n\nChanges:\n${SANITIZED_CHANGES}")"
         fi
 
         git tag -n99 --list "${NEW_TAG}"
