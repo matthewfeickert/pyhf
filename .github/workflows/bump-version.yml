@@ -219,16 +219,18 @@ jobs:
         CHANGES=$(git log --pretty=format:'%s' "${OLD_TAG}"..HEAD --regexp-ignore-case --extended-regexp --grep='^([a-z]*?):')
         CHANGES_NEWLINE="$(echo "${CHANGES}" | sed -e 's/^/  - /')"
 
-        echo "CHANGES_NEWLINE:"
-        echo "${CHANGES_NEWLINE}"
-        echo ""
+        # filter by semantic pr type and join together with ` :: ` seperator
+        # split commits to new lines on ` :: ` seperator
+        # move PR number from end of line to front
+        SANITIZED_CHANGES=$(echo "${CHANGES_NEWLINE}" | \
+            sort | \
+            sed ':a;N;s|^\([^:]\+\): \(.*\)\n\1: \(.*\)$|\1: \2 :: \3|;ta;P;D;ba' | \
+            sed 's|: \(.\+\)$|:\n      * \1|g' | \
+            sed 's| :: |\n      * |g' | \
+            sed 's|^\( \+\*\)\([^(]*\)\(.*\)$|\1 \3\2|g')
 
-        CHANGES_NEWLINE_SORTED="$(echo ${CHANGES_NEWLINE} | sort)"
-        CHANGES_GROUPED="$(echo ${CHANGES_NEWLINE_SORTED} | sed ':a;N;s/^\([^:]\+\): \(.*\)\n\1: \(.*\)$/\1: \o11\2\o11\o11\3/;ta;P;D;ba')"
-        CHANGES_NEWLINE="$(echo ${CHANGES_GROUPED} | sed 's/\o11\+/\n\o11/g;s/: \(.\+\)$/:\n\o11\1/g')"
-
-        echo "CHANGES_NEWLINE:"
-        echo "${CHANGES_NEWLINE}"
+        echo "SANITIZED_CHANGES:"
+        echo "${SANITIZED_CHANGES}"
         echo ""
 
         if [ ${{ github.event.inputs.release_candidate }} == 'true' ]; then
