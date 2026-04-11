@@ -7,7 +7,7 @@ import pyhf
 
 
 @pytest.fixture
-def model_setup(backend):
+def model_setup(_backend):
     np.random.seed(0)
     n_bins = 100
     model = pyhf.simplemodels.uncorrelated_background(
@@ -99,7 +99,7 @@ def test_supported_precision(precision_level):
 
 def test_custom_backend_name_supported():
     class custom_backend:
-        def __init__(self, **kwargs):
+        def __init__(self, **_):
             self.name = "jax"
             self.precision = "64b"
 
@@ -112,7 +112,7 @@ def test_custom_backend_name_supported():
 
 def test_custom_optimizer_name_supported():
     class custom_optimizer:
-        def __init__(self, **kwargs):
+        def __init__(self, **_):
             self.name = "scipy"
 
     with pytest.raises(AttributeError):
@@ -121,7 +121,7 @@ def test_custom_optimizer_name_supported():
 
 def test_custom_backend_name_notsupported():
     class custom_backend:
-        def __init__(self, **kwargs):
+        def __init__(self, **_):
             self.name = "notsupported"
             self.precision = "64b"
 
@@ -136,7 +136,7 @@ def test_custom_backend_name_notsupported():
 
 def test_custom_optimizer_name_notsupported():
     class custom_optimizer:
-        def __init__(self, **kwargs):
+        def __init__(self, **_):
             self.name = "notsupported"
 
     optimizer = custom_optimizer()
@@ -159,12 +159,14 @@ def test_backend_slotted_attributes(backend_name):
         assert getattr(pyhf.tensorlib, attr) is not None
 
 
-def test_logpprob(backend, model_setup):
+@pytest.mark.usefixtures("backend")
+def test_logpprob(model_setup):
     model, data, init_pars = model_setup
     model.logpdf(init_pars, data)
 
 
-def test_hypotest(backend, model_setup):
+@pytest.mark.usefixtures("backend")
+def test_hypotest(model_setup):
     model, data, init_pars = model_setup
     mu = 1.0
     pyhf.infer.hypotest(
@@ -185,7 +187,8 @@ def test_prob_models(backend):
     )
 
 
-def test_pdf_batched(backend):
+@pytest.mark.usefixtures("backend")
+def test_pdf_batched():
     source = {
         "binning": [2, -0.5, 1.5],
         "bindata": {"data": [55.0], "bkg": [50.0], "bkgerr": [7.0], "sig": [10.0]},
@@ -224,7 +227,8 @@ def test_set_schema_path_context(monkeypatch):
         assert pyhf.schema.path == new_path
 
 
-def test_pdf_set_poi(backend):
+@pytest.mark.usefixtures("backend")
+def test_pdf_set_poi():
     model = pyhf.simplemodels.uncorrelated_background([5.0], [10.0], [2.5])
     assert model.config.poi_index == 0
     assert model.config.poi_name == "mu"
